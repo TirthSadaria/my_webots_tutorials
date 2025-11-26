@@ -1,0 +1,30 @@
+# Build artifacts
+build/
+install/
+log/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# ROS2 specific
+*.db3
+*.bag
+
+# Keep results directory structure but ignore bag files
+walker/results/*/
+!walker/results/.gitkeep
+

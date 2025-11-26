@@ -1,0 +1,281 @@
+#VRML_SIM R2023b utf8
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/Floor.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/solids/protos/Box.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/devices/sick/protos/SickLms291.proto"
+
+WorldInfo {
+  title "Walker World"
+  info [
+    "Walker robot simulation world with obstacles"
+  ]
+  basicTimeStep 16
+  physicsDisableTime 0
+  physicsDisableLinearThreshold 0.01
+  physicsDisableAngularThreshold 0.01
+  physicsEngine "ODE"
+  gravity 0 -9.81 0
+  coordinateSystem "NUE"
+}
+
+Viewpoint {
+  orientation 0.5773502691896258 0.5773502691896258 0.5773502691896258 2.0943951023931957
+  position 5 5 5
+  follow ""
+}
+
+TexturedBackground {
+  skybox FALSE
+  skyColor [
+    0.4 0.4 0.4
+  ]
+}
+
+TexturedBackgroundLight {
+  brightness 1
+  rotation 0.5773502691896258 0.5773502691896258 0.5773502691896258 2.0943951023931957
+}
+
+Floor {
+  translation 0 0 0
+  size 10 10
+  tileSize 1 1
+  appearance PBRAppearance {
+    baseColorMap ImageTexture {
+      url [
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/default/worlds/textures/checkerboard_gray.png"
+      ]
+    }
+    roughness 0.7
+    metalness 0
+  }
+  contactMaterial "default"
+  physics Physics {
+  }
+}
+
+# Walls to enclose the area
+Box {
+  translation -5 0.5 0
+  size 0.1 1 10
+  appearance PBRAppearance {
+    baseColor 0.5 0.5 0.5
+    roughness 0.7
+    metalness 0
+  }
+  physics Physics {
+  }
+}
+
+Box {
+  translation 5 0.5 0
+  size 0.1 1 10
+  appearance PBRAppearance {
+    baseColor 0.5 0.5 0.5
+    roughness 0.7
+    metalness 0
+  }
+  physics Physics {
+  }
+}
+
+Box {
+  translation 0 0.5 -5
+  size 10 1 0.1
+  appearance PBRAppearance {
+    baseColor 0.5 0.5 0.5
+    roughness 0.7
+    metalness 0
+  }
+  physics Physics {
+  }
+}
+
+Box {
+  translation 0 0.5 5
+  size 10 1 0.1
+  appearance PBRAppearance {
+    baseColor 0.5 0.5 0.5
+    roughness 0.7
+    metalness 0
+  }
+  physics Physics {
+  }
+}
+
+# Obstacles
+Box {
+  translation 2 0.25 2
+  size 0.5 0.5 0.5
+  appearance PBRAppearance {
+    baseColor 1 0 0
+    roughness 0.7
+    metalness 0
+  }
+  physics Physics {
+  }
+}
+
+Box {
+  translation -2 0.25 -2
+  size 0.5 0.5 0.5
+  appearance PBRAppearance {
+    baseColor 1 0 0
+    roughness 0.7
+    metalness 0
+  }
+  physics Physics {
+  }
+}
+
+Box {
+  translation 0 0.25 0
+  size 0.5 0.5 0.5
+  appearance PBRAppearance {
+    baseColor 1 0 0
+    roughness 0.7
+    metalness 0
+  }
+  physics Physics {
+  }
+}
+
+Box {
+  translation 3 0.25 -3
+  size 0.5 0.5 0.5
+  appearance PBRAppearance {
+    baseColor 1 0 0
+    roughness 0.7
+    metalness 0
+  }
+  physics Physics {
+  }
+}
+
+Box {
+  translation -3 0.25 3
+  size 0.5 0.5 0.5
+  appearance PBRAppearance {
+    baseColor 1 0 0
+    roughness 0.7
+    metalness 0
+  }
+  physics Physics {
+  }
+}
+
+# Custom walker robot
+Robot {
+  translation 0 0 0.05
+  rotation 0 1 0 0
+  controller "webots_ros2_driver"
+  controllerArgs [
+    "--robot-description=robot_description"
+  ]
+  name "walker_robot"
+  supervisor FALSE
+  synchronization TRUE
+  selfCollision FALSE
+  children [
+    # Base body
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0 0 1
+        roughness 0.7
+        metalness 0
+      }
+      geometry Box {
+        size 0.2 0.1 0.2
+      }
+    }
+    # Left wheel
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        position 0
+        axis 0 1 0
+      }
+      device [
+        RotationalMotor {
+          name "left_wheel_joint"
+        }
+      ]
+      endPoint Solid {
+        translation 0 0.05 0.1
+        rotation 1 0 0 1.5708
+        children [
+          Shape {
+            appearance PBRAppearance {
+              baseColor 0 0 0
+              roughness 0.7
+              metalness 0
+            }
+            geometry Cylinder {
+              radius 0.05
+              height 0.02
+            }
+          }
+        ]
+        physics Physics {
+          density -1
+          mass 0.1
+        }
+        boundingObject Cylinder {
+          radius 0.05
+          height 0.02
+        }
+      }
+    }
+    # Right wheel
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        position 0
+        axis 0 1 0
+      }
+      device [
+        RotationalMotor {
+          name "right_wheel_joint"
+        }
+      ]
+      endPoint Solid {
+        translation 0 -0.05 0.1
+        rotation 1 0 0 1.5708
+        children [
+          Shape {
+            appearance PBRAppearance {
+              baseColor 0 0 0
+              roughness 0.7
+              metalness 0
+            }
+            geometry Cylinder {
+              radius 0.05
+              height 0.02
+            }
+          }
+        ]
+        physics Physics {
+          density -1
+          mass 0.1
+        }
+        boundingObject Cylinder {
+          radius 0.05
+          height 0.02
+        }
+      }
+    }
+    # Laser scanner
+    SickLms291 {
+      translation 0.1 0 0.05
+      rotation 0 1 0 0
+      name "laser"
+    }
+  ]
+  physics Physics {
+    density -1
+    mass 1.0
+  }
+  boundingObject Box {
+    size 0.2 0.1 0.2
+  }
+}
+
